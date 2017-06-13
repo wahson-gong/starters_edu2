@@ -1,0 +1,136 @@
+<!--本局部试图属于 index_for_all_students.html.erb ,用于显示所有学员的某次特定模拟考试的(SAT)成绩列表-->
+
+<table class ="ui celled table segment">
+  <thead>
+  <tr>
+
+    <th></th>
+    <th>总分</th>
+
+    <%if can_view_subject('CR' , @training_class,current_user) %>
+        <th  colspan="5">Reading</th>
+    <%end%>
+
+    <%if can_view_subject('Math' , @training_class,current_user) %>
+        <th  colspan="5">Mathematics</th>
+    <%end%>
+
+    <%if can_view_subject('Grammar' , @training_class,current_user) %>
+        <th colspan="5">Writing </th>
+    <%end%>
+
+    <th colspan="4">Eassy </th>
+
+    <th></th>
+  </tr>
+  </thead>
+  <tr>
+
+    <th>学员</th>
+    <th></th>
+
+    <%if can_view_subject('CR' , @training_class,current_user) %>
+    <th>Reading总分 </th> <th>raw score </th><th> <i class="green checkmark icon"></i> </th> <th><i class="red close icon"></i> </th><th><i class="teal minus icon"></i> </th>
+    <%end%>
+
+    <%if can_view_subject('Math' , @training_class,current_user) %>
+    <th>Math总分 </th> <th>raw score </th>
+    <th> <i class="green checkmark icon"></i> </th> <th><i class="red close icon"></i> </th><th><i class="teal minus icon"></i> </th>
+    <%end%>
+
+    <%if can_view_subject('Grammar' , @training_class,current_user) %>
+    <th>Writing 得分</th><th>raw score </th>
+    <th> <i class="green checkmark icon"></i> </th> <th><i class="red close icon"></i> </th><th><i class="teal minus icon"></i> </th>
+
+    <%end%>
+
+    <th>Eassy 得分</th>
+    <th>R</th>
+    <th>A</th>
+    <th>W</th>
+
+
+    <th></th>
+  </tr>
+  <tbody>
+
+  <% @training_class_students.each do |student| %>
+
+      <% score = @scores.where(student_id: student ).first %>
+
+
+      <tr>
+        <td><%= student.name %></td>
+
+        <td class="lightgreen"><%= score.try(:final_score) %> </td>
+        <%if can_view_subject('CR' , @training_class,current_user) %>
+            <td class="normal_blue"><%= score.try(:course_e_score) %></td>
+            <td><%= score.try(:stat_17) %></td>
+            <td><%= score.try(:stat_18) %></td>
+            <td><%= score.try(:stat_19) %></td>
+            <td><%= score.try(:stat_20) %></td>
+
+        <%end%>
+
+        <%if can_view_subject('Math' , @training_class,current_user) %>
+            <td class="orange"><%= score.try(:course_b_score) %></td>
+            <td><%= score.try(:stat_11) %></td>
+            <td><%= score.try(:stat_08) %></td>
+            <td><%= score.try(:stat_09) %></td>
+            <td><%= score.try(:stat_10) %></td>
+        <%end%>
+
+        <%if can_view_subject('Grammar' , @training_class,current_user) %>
+            <td class="green"><%= score.try(:course_c_score) %></td>
+            <td><%= score.try(:stat_15) %></td>
+            <td><%= score.try(:stat_12) %></td>
+            <td><%= score.try(:stat_13) %></td>
+            <td><%= score.try(:stat_14) %></td>
+
+        <%end%>
+
+
+        <td class="green"><%= score.try(:course_a_score) %></td>
+        <td><%= score.try(:course_a1_score) %></td>
+        <td><%= score.try(:course_a2_score) %></td>
+        <td><%= score.try(:course_a3_score) %></td>
+
+
+        <% if current_user.teacher? %>
+             <td></td>
+        <% else %>
+            <td>
+            <%=
+               if score.nil?
+                 # link_to(new_student_examination_score2_path(student,@examination),{class:'ui green icon button popup_tip_button',"data-content"=>"录入#{student.name}的模拟考试成绩"})do
+                 #   raw( '<i class="edit icon"> </i>')
+                 # end
+                 #ghy
+                 link_to(new_student_examination_score2_path(student,@examination),{class:'ui green icon button popup_tip_button',"data-content"=>"录入#{student.name}的模拟考试成绩"})do
+                   raw( '<i class="edit icon"> </i>')
+                 end
+
+               else
+                 #ghy
+                 link_to(edit_student_examination_score2_path(student,@examination,score) ,{class:'ui green icon button popup_tip_button',"data-content"=>"修改#{student.name}的模拟考试成绩"}) do
+                   raw( '<i class="edit icon"> </i>')
+                 end
+
+                 #ghy
+
+
+               end
+
+
+
+            %>
+
+
+            </td>
+        <% end %>
+
+
+      </tr>
+  <% end %>
+  </tbody>
+</table>
